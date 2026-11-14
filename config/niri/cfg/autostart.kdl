@@ -1,0 +1,7 @@
+// ────────────── Startup Applications ──────────────
+// https://github.com/YaLTeR/niri/wiki/Configuration:-Miscellaneous#spawn-sh-at-startup
+
+    spawn-at-startup "noctalia"
+    // Optional engine: do not require it on the recipient's machine.
+    spawn-sh-at-startup "if command -v easyeffects >/dev/null 2>&1; then exec easyeffects --hide-window; fi"
+    // Live wallpaper is opt-in; no Waydroid, VPN services or personal apps.

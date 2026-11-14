@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+config="${XDG_CONFIG_HOME:-$HOME/.config}/niri/apps.conf"
+[[ ! -f "$config" ]] || source "$config"
+
+case "${1:-}" in
+  terminal)
+    if [[ -n "${TERMINAL:-}" ]]; then exec "$TERMINAL"; fi
+    for app in alacritty kitty foot ghostty wezterm konsole gnome-terminal xterm; do
+      if command -v "$app" >/dev/null 2>&1; then exec "$app"; fi
+    done
+    echo "Install a terminal or set TERMINAL in $config" >&2
+    exit 1
+    ;;
+  browser)
+    if [[ -n "${BROWSER:-}" ]]; then exec "$BROWSER"; fi
+    exec xdg-open "https://example.org"
+    ;;
+  files)
+    if [[ -n "${FILE_MANAGER:-}" ]]; then exec "$FILE_MANAGER" "$HOME"; fi
+    exec xdg-open "$HOME"
+    ;;
+  *) echo "Usage: niri-app terminal|browser|files" >&2; exit 2 ;;
+esac

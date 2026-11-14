@@ -1,0 +1,15 @@
+[shell]
+polkit_agent = true
+
+[wallpaper]
+enabled = true
+
+# Тост «Screenshot saved» от Noctalia должен висеть совсем недолго:
+# фильтр по заголовку перебивает таймаут для скриншот-уведомлений.
+[notification]
+filter_order = ["screenshot-saved"]
+
+[notification.filter.screenshot-saved]
+enabled           = true
+match_content     = "^Screenshot saved$"
+override_duration = 600

@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.backup-*
+*.bak*
+*.log
+*.key
+*.pem
+.env*
+**/runtime/
+**/data/
+servers.json
+subscriptions.json
+identity
+state.toml

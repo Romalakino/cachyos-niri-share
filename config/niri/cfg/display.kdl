@@ -1,0 +1,6 @@
+// ────────────── Output Configuration ──────────────
+// You can run `niri msg outputs` to get the correct name for your displays.
+// https://github.com/YaLTeR/niri/wiki/Configuration:-Outputs
+
+// No fixed outputs: niri chooses supported modes for this machine.
+// Add your own output block here after checking `niri msg outputs`.

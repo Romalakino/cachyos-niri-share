@@ -1,0 +1,162 @@
+config_version = 16
+
+[audio]
+enable_overdrive = false
+
+[backdrop]
+blur_intensity = 0.0
+tint_intensity = 0.0
+
+[bar.default]
+background_opacity = 0.55
+capsule = true
+capsule_opacity = 0.55
+center = ["__BAR_CENTER__"]
+compositor_blur = true
+end = ["bar", "tray", "notifications", "notes", "bluetooth", "volume", "brightness", "battery", "control-center", "session"]
+start = ["launcher", "workspaces", "wallhaven"]
+
+[control_center]
+hidden_tabs = []
+
+[[control_center.shortcuts]]
+type = "bluetooth"
+[[control_center.shortcuts]]
+type = "caffeine"
+[[control_center.shortcuts]]
+type = "nightlight"
+[[control_center.shortcuts]]
+type = "notification"
+
+[desktop_widgets]
+enabled = true
+schema_version = 2
+widget_order = ["media", "visualizer"]
+
+[desktop_widgets.widget.media]
+type = "media_player"
+output = ""
+cx = 728.0
+cy = 1006.0
+box_width = 464.0
+box_height = 144.0
+placement_width = 1920.0
+placement_height = 1080.0
+
+[desktop_widgets.widget.visualizer]
+type = "fancy_audio_visualizer"
+output = ""
+cx = 960.0
+cy = 540.0
+box_width = 992.0
+box_height = 416.0
+placement_width = 1920.0
+placement_height = 1080.0
+
+[desktop_widgets.widget.visualizer.settings]
+background = false
+bar_width = 0.6
+bloom_intensity = 0.5
+primary_color = "on_primary"
+ring_opacity = 0.6
+rotation_speed = 0.4
+sensitivity = 2.9
+
+[dock]
+active_monitor_only = true
+enabled = true
+icon_size = 38
+reserve_space = false
+smart_auto_hide = true
+
+[location]
+auto_locate = false
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = []
+
+[plugin_settings."noctalia/screen_recorder"]
+directory = "__VIDEOS__"
+filename_pattern = "Запись %Y-%m-%d %H-%M-%S"
+frame_rate = 60
+glyph_pending = "loader-2"
+glyph_recording = "video-filled"
+post_save_script = "__RENAME_SCRIPT__"
+video_codec = "h264"
+video_qp = 26
+video_source = "focused"
+
+[plugin_settings."noctalia/wallhaven"]
+download_dir = "__WALLPAPERS__"
+
+[plugin_settings."vlad-dev/ruh-vpn"]
+auto_start = false
+geoip_country = false
+ping_timeout_ms = 5000
+ping_url = "https://example.com"
+vpn_panel_placement = "floating"
+
+[plugins]
+auto_update = "none"
+enabled = ["__PLUGINS__"]
+
+# Snapshots work offline; later path source overrides any downloaded copies.
+[[plugins.source]]
+kind = "git"
+location = "https://github.com/noctalia-dev/official-plugins"
+name = "official"
+enabled = false
+
+[[plugins.source]]
+kind = "git"
+location = "https://github.com/noctalia-dev/community-plugins"
+name = "community"
+enabled = false
+
+[[plugins.source]]
+kind = "path"
+location = "__PLUGIN_DIR__"
+name = "dotfiles"
+
+[shell]
+panel_anchor_bar = "default"
+
+[shell.animation]
+speed = 0.6
+
+[shell.panel]
+control_center_placement = "floating"
+transparency_mode = "glass"
+
+[shell.screenshot]
+directory = "__PICTURES__"
+
+[theme]
+builtin = "Ayu"
+mode = "dark"
+source = "wallpaper"
+
+[theme.templates]
+builtin_ids = ["niri"]
+
+[wallpaper.default]
+path = "__WALLPAPER__"
+
+[widget.bar]
+type = "vlad-dev/timer:bar"
+[widget.eq_widget]
+type = "vlad-dev/equalizer:eq_widget"
+[widget.keybinds]
+type = "kenn/keybind-cheatsheet:keybinds"
+[widget.launcher]
+glyph = "spider-filled"
+[widget.notes]
+type = "noctalia/notes:notes"
+[widget.recorder]
+type = "noctalia/screen_recorder:recorder"
+[widget.vpn_widget]
+type = "vlad-dev/ruh-vpn:vpn_widget"
+[widget.wallhaven]
+type = "noctalia/wallhaven:wallhaven"

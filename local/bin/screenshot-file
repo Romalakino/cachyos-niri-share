@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Скриншот → в буфер кладётся ССЫЛКА НА ФАЙЛ (text/uri-list), а не голый image/png.
+
+Зачем: Noctalia при копировании отдаёт в буфер только image/png без имени, поэтому
+браузер при вставке сам придумывает файл и всегда одно и то же имя (image.png) —
+второй скриншот сайт отвергает как «файл уже загружен». Здесь же в буфер ложится
+file://.../screenshot_ГГГГММДД_ЧЧМСС.png, а Firefox превращает text/uri-list в
+x-moz-file, то есть на сайт уходит реальный файл с уникальным именем.
+
+Использование:  screenshot-file [region|full|annotate]
+
+Голой картинке (image/png без имени, для чатов и редакторов) соответствует прямой
+вызов `noctalia msg screenshot-region` — в niri это Mod+Print / Mod+Ctrl+Print.
+
+Уведомление о сохранении показывает сама Noctalia, поэтому здесь молчим.
+"""
+import subprocess
+import sys
+import time
+import urllib.parse
+from pathlib import Path
+
+EXTS = (".png", ".jpg", ".jpeg", ".webp", ".jxl")
+MODES = {"region": "screenshot-region", "full": "screenshot-fullscreen",
+         "annotate": "screenshot-annotate"}
+TIMEOUT = 60.0
+POLL = 0.25
+
+
+def pictures_dir() -> Path:
+    try:
+        out = subprocess.run(["xdg-user-dir", "PICTURES"], capture_output=True,
+                             text=True, timeout=5).stdout.strip()
+        if out:
+            return Path(out)
+    except Exception:
+        pass
+    return Path.home() / "Pictures"
+
+
+def newest_shot(d: Path, newer_than: float) -> Path | None:
+    """Самый свежий screenshot_* с mtime позже newer_than."""
+    best, best_t = None, 0.0
+    try:
+        for p in d.iterdir():
+            if not (p.name.startswith("screenshot_") and p.suffix.lower() in EXTS):
+                continue
+            m = p.stat().st_mtime
+            if m > best_t and m > newer_than:
+                best, best_t = p, m
+    except OSError:
+        return None
+    return best
+
+
+def main() -> int:
+    mode = (sys.argv[1] if len(sys.argv) > 1 else "region").lower()
+    if mode not in MODES:
+        print(f"неизвестный режим: {mode} (region|full|annotate)", file=sys.stderr)
+        return 2
+
+    d = pictures_dir()
+    d.mkdir(parents=True, exist_ok=True)
+    prev = newest_shot(d, 0.0)
+    # Порог с запасом: mtime записанного файла может оказаться чуть «в прошлом».
+    start = time.time() - 2.0
+
+    subprocess.run(["noctalia", "msg", MODES[mode]], capture_output=True, check=False)
+
+    shot = None
+    deadline = time.time() + TIMEOUT
+    while time.time() < deadline:
+        shot = newest_shot(d, start)
+        if shot and (prev is None or shot != prev):
+            break
+        time.sleep(POLL)
+
+    if shot is None:
+        # Захват отменили (Esc) — молча выходим, буфер не тронут.
+        return 0
+
+    uri = "file://" + urllib.parse.quote(str(shot))
+    subprocess.run(["wl-copy", "--type", "text/uri-list"],
+                   input=uri + "\n", text=True, check=True)
+    print(uri)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
